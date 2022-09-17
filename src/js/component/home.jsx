@@ -1,24 +1,26 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 //include images into your bundle
-import rigoImage from "../../img/rigo-baby.jpg";
+import {Todoform} from "./Todoform.jsx"
 
 //create your first component
 const Home = () => {
+	
+	const getTareas = () => {
+		fetch("https://assets.breatheco.de/apis/fake/todos/user/dSadovnik")
+		.then((res) => res.json())
+		.then((data)=>console.log(data)); 
+	}
+	
+	useEffect(()=>{ 
+		getTareas();
+	}, [])
+	
 	return (
-		<div className="text-center">
-			<h1 className="text-center mt-5">Hello Rigo!</h1>
-			<p>
-				<img src={rigoImage} />
-			</p>
-			<a href="#" className="btn btn-success">
-				If you see this green button... bootstrap is working...
-			</a>
-			<p>
-				Made by{" "}
-				<a href="http://www.4geeksacademy.com">4Geeks Academy</a>, with
-				love!
-			</p>
+		<div className="Home">
+			<Todoform
+			/>
+			
 		</div>
 	);
 };
