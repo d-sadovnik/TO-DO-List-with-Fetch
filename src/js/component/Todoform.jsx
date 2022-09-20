@@ -1,5 +1,4 @@
-import { useState } from "react";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 const Todoform = () => {
   const [InputTodo, setInputTodo] = useState("");
@@ -16,13 +15,43 @@ const Todoform = () => {
   };
 
   const NewTodo = (ToDo) => {
-    setListaTodo([ToDo, ...ListaTodo]);
+    putTareas([{label: ToDo, done: false}, ...ListaTodo]);
   };
 
   const borrar = (id) => {
     const FilteredList = ListaTodo.filter((element, index) => index !== id);
-    setListaTodo(FilteredList);
+    putTareas(FilteredList);
   }
+
+  const getTareas = () => {
+		fetch("https://assets.breatheco.de/apis/fake/todos/user/dSadovnik")
+			.then((res) => res.json())
+			.then((data) => setListaTodo(data))
+			.catch(error => console.log(true));
+	}
+
+  const putTareas = (todos) => {
+    fetch("https://assets.breatheco.de/apis/fake/todos/user/dSadovnik", {
+      method: "PUT",
+      body: JSON.stringify(todos),
+      headers: {
+        "Content-Type": "application/json"
+      }
+    })
+    .then(resp => resp.json())
+    .then(data => {
+        console.log(data);
+        getTareas()
+    })
+    .catch(error => {
+        console.log(error);
+    });
+
+  }
+
+	useEffect(() => {
+		getTareas();
+	}, [])
 
   return (
     <div>
@@ -37,7 +66,7 @@ const Todoform = () => {
         <div>
             {ListaTodo.map((element, index) => {
               return <div className="col-4 mx-auto d-flex justify-content-between p-1 mb-2 bg-light text-dark border border-secondary rounded-3">
-                <p className="m-2">{element}</p>
+                <p className="m-2">{element.label}</p>
                 <button className="btn btn-secondary" onClick={()=> borrar(index)}>Delete</button>
               </div>;
             })}
